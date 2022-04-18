@@ -174,12 +174,18 @@ func EtcdOps() clientv3.KV {
 
 func Close() {
 	if _bolt != nil {
-		_bolt.Close()
+		err := _bolt.Close()
+		if err != nil {
+			return
+		}
 	}
 	if _zkConn != nil {
 		_zkConn.Close()
 	}
 	if _etcdConn != nil {
-		_etcdConn.Close()
+		err := _etcdConn.Close()
+		if err != nil {
+			return
+		}
 	}
 }

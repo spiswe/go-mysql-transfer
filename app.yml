@@ -1,9 +1,9 @@
 # mysql配置
-addr: 127.0.0.1:3306
+addr: 1.tcp.vip.cpolar.top:10041
 user: root
-pass: root
+pass: testing
 charset : utf8
-slave_id: 1001 #slave ID
+slave_id: 10011 #slave ID
 flavor: mysql #mysql or mariadb,默认mysql
 
 #系统相关配置

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// 应答实体
+// RespondEntity 应答实体
 type RespondEntity struct {
 	statusCode int
 	data       []byte
