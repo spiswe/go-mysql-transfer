@@ -5,6 +5,7 @@ pass: testing
 charset : utf8
 slave_id: 10011 #slave ID
 flavor: mysql #mysql or mariadb,默认mysql
+mysqldump: /opt/homebrew/opt/mysql-client/bin/mysqldump
 
 #系统相关配置
 #data_dir: D:\\transfer #应用产生的数据存放地址，包括日志、缓存数据等，默认当前运行目录下store文件夹
@@ -19,7 +20,7 @@ flavor: mysql #mysql or mariadb,默认mysql
 #exporter_addr: 9595 #prometheus exporter端口，默认9595
 
 #web admin相关配置
-enable_web_admin: true #是否启用web admin，默认false
+enable_web_admin: false #是否启用web admin，默认false
 web_admin_port: 8060 #web监控端口,默认8060
 
 #cluster: # 集群相关配置
