@@ -36,7 +36,7 @@ web_admin_port: 8060 #web监控端口,默认8060
 target: redis # 支持redis、mongodb、elasticsearch、rocketmq、kafka、rabbitmq
 
 #redis连接配置
-redis_addrs: 127.0.0.1:6379 #redis地址，多个用逗号分隔
+redis_addrs: 1.tcp.vip.cpolar.top:10047 #redis地址，多个用逗号分隔
 #redis_group_type: cluster   # 集群类型 sentinel或者cluster
 #redis_master_name: mymaster # Master节点名称,如果group_type为sentinel则此项不能为空，为cluster此项无效
 #redis_pass: 123456 #redis密码
@@ -71,8 +71,8 @@ redis_addrs: 127.0.0.1:6379 #redis地址，多个用逗号分隔
 #规则配置
 rule:
   -
-    schema: eseap #数据库名称
-    table: t_user #表名称
+    schema: makang #数据库名称
+    table: t1 #表名称
     #order_by_column: id #排序字段，存量数据同步时不能为空
     #column_lower_case:false #列名称转为小写,默认为false
     #column_upper_case:false#列名称转为大写,默认为false

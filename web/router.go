@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"runtime"
 	"strconv"
 	"time"
 
@@ -30,8 +31,16 @@ func Start() error {
 	//statics := "D:\\statics"
 	//index := "D:\\statics\\index.html"
 
+	_, filePath, _, ok := runtime.Caller(1)
+	absPath := path.Dir(filePath)
+	//if ok {
+	//	absPath := path.Dir(filePath)
+	//} else {
+	//	absPath := "/opt"
+	//}
 	statics := "statics"
-	index := path.Join(statics, "index.html")
+	index := path.Join(absPath, "web", statics, "index.html")
+	fmt.Println(index)
 	g.Static("/statics", statics)
 	g.LoadHTMLFiles(index)
 	g.GET("/", webAdminFunc)
