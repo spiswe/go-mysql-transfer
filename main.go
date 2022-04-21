@@ -28,6 +28,7 @@ import (
 
 	"github.com/juju/errors"
 	"github.com/siddontang/go-mysql/mysql"
+	//"go-mysql-transfer/go-mysql"
 
 	"go-mysql-transfer/global"
 	"go-mysql-transfer/metrics"

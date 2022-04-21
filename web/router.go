@@ -111,7 +111,7 @@ func webAdminFunc(c *gin.Context) {
 		"isCluster":     global.Cfg().IsCluster(),
 		"isRedirect":    false,
 	}
-
+	//docker.io/bitnami/redis:4
 	if global.Cfg().IsCluster() {
 		h["isZk"] = global.Cfg().IsZk()
 		h["zkAddrs"] = global.Cfg().Cluster.ZkAddrs
