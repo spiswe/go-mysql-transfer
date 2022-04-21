@@ -5,7 +5,7 @@ pass: testing
 charset : utf8
 slave_id: 10011 #slave ID
 flavor: mysql #mysql or mariadb,默认mysql
-mysqldump: /opt/homebrew/opt/mysql-client/bin/mysqldump
+#mysqldump: /opt/homebrew/opt/mysql-client/bin/mysqldump
 
 #系统相关配置
 #data_dir: D:\\transfer #应用产生的数据存放地址，包括日志、缓存数据等，默认当前运行目录下store文件夹
@@ -34,7 +34,7 @@ web_admin_port: 8060 #web监控端口,默认8060
   #etcd_password: 123456 #etcd密码
 
 #目标类型
-target: redis # 支持redis、mongodb、elasticsearch、rocketmq、kafka、rabbitmq
+target: kafka # 支持redis、mongodb、elasticsearch、rocketmq、kafka、rabbitmq
 
 #redis连接配置
 redis_addrs: 1.tcp.vip.cpolar.top:10047 #redis地址，多个用逗号分隔
@@ -62,7 +62,7 @@ redis_addrs: 1.tcp.vip.cpolar.top:10047 #redis地址，多个用逗号分隔
 #rocketmq_secret_key: 12345678 #访问控制 secretKey,默认为空
 
 #kafka连接配置
-#kafka_addrs: 127.0.0.1:9092 #kafka连接地址，多个用逗号分隔
+kafka_addrs: 1.tcp.vip.cpolar.top:10047 #kafka连接地址，多个用逗号分隔
 #kafka_sasl_user:  #kafka SASL_PLAINTEXT认证模式 用户名
 #kafka_sasl_password: #kafka SASL_PLAINTEXT认证模式 密码
 
@@ -73,7 +73,7 @@ redis_addrs: 1.tcp.vip.cpolar.top:10047 #redis地址，多个用逗号分隔
 rule:
   -
     schema: makang #数据库名称
-    table: t1 #表名称
+    table: makang.t1 #表名称
     #order_by_column: id #排序字段，存量数据同步时不能为空
     #column_lower_case:false #列名称转为小写,默认为false
     #column_upper_case:false#列名称转为大写,默认为false
