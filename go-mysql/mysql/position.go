@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// For binlog filename + position based replication
+// Position For binlog filename + position based replication
 type Position struct {
 	Name string
 	Pos  uint32

@@ -20,6 +20,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	//mysql2 "github.com/siddontang/go-mysql/mysql"
+
+	//mysql2 "github.com/siddontang/go-mysql/mysql"
 	"log"
 	"os"
 	"os/signal"
@@ -28,9 +31,8 @@ import (
 
 	"github.com/juju/errors"
 	"github.com/siddontang/go-mysql/mysql"
-	//"go-mysql-transfer/go-mysql"
-
 	"go-mysql-transfer/global"
+	//"go-mysql-transfer/go-mysql/mysql"
 	"go-mysql-transfer/metrics"
 	"go-mysql-transfer/service"
 	"go-mysql-transfer/storage"
@@ -185,6 +187,12 @@ func doPosition() {
 		Name: f,
 		Pos:  pp,
 	}
+
+	//pos2 := mysql2.Position{
+	//	Name: f,
+	//	Pos: pp,
+	//}
+	//ps.Save(mysql2.Position(pos2))
 	ps.Save(pos)
 	fmt.Printf("The current dump position is : %s %d \n", f, pp)
 }

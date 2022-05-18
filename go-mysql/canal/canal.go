@@ -55,7 +55,7 @@ type Canal struct {
 	cancel context.CancelFunc
 }
 
-// canal will retry fetching unknown table's meta after UnknownTableRetryPeriod
+// UnknownTableRetryPeriod canal will retry fetching unknown table's meta after UnknownTableRetryPeriod
 var UnknownTableRetryPeriod = time.Second * time.Duration(10)
 var ErrExcludedTable = errors.New("excluded table meta")
 

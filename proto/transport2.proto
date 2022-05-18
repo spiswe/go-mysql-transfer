@@ -1,0 +1,214 @@
+syntax = "proto3";
+// 定义包名
+option go_package = "/transport";
+
+message Entry {
+
+    /** 协议头部信息 **/
+    Header             header = 1;
+
+    /**事件类型**/
+    EntryType          entryType = 2;
+
+    /**事件实体**/
+    EntryBody          entryBody = 3;
+}
+
+message Header {
+
+    /**协议的版本号**/  //[default = 1]
+    int32           version = 1;
+
+
+    /**binlog/mlog$_table 文件名**/
+    string          logfileName = 2;
+
+
+    /**binlog/mlog$_tablename 文件的偏移位置, 物化视图日志刷新时间，原始为date，要求转为unixtimestamp，**/
+    int64          logfileOffset = 3;
+
+
+    /**服务端标识，MySQL为serverId，Oracle设置为OracleSID@IP **/
+    string         serverId = 4;
+
+
+    /** 变更数据的字符集编码 **/
+    string          serverEnCode = 5;
+
+
+    /**变更数据的执行时间 **/
+    int64          executeTime = 6;
+
+
+    /** 变更数据数据源类型，MySQL，Oracle，PGSQL**/
+    DatabaseType    sourceType = 7;
+
+
+    /** 变更数据的schema name**/
+    string          schemaName = 8;
+
+
+    /**变更数据的table name**/
+    string          tableName = 9;
+
+
+    /**每个event的长度**/
+    int64          eventLength = 10;
+
+
+    /** 数据操作类型 **/  // [default = UPDATE]
+    EventType        eventType = 11;
+
+
+    /**当前事务的gtid, 仅限 MySQL **/
+    string           gtid = 12;
+
+
+    /**预留扩展**/
+    repeated ExtraInfo        extraInfoList = 13;
+
+}
+
+message EntryBody {
+
+    /** row change 信息 **/
+    RowChange          rowChange = 1;
+
+    repeated ExtraInfo   extraInfoList = 2;
+
+}
+
+/**每个字段的数据结构**/
+message  Column {
+
+    /**字段下标，若Oracle，则需要参照物化视图字段下标进行计算**/
+    int32    index = 1;
+
+    /**字段类型，对应语言类型，预留**/
+    int32    colType = 2;
+
+    /**字段数据库类型**/
+    string    colSQLType = 3;
+
+    /**字段名称(需要确认能否忽略大小写)**/
+    string    colName = 4;
+
+    /**是否是主键**/
+    bool    isPK = 5;
+
+    /**如果EventType=UPDATE,用于标识这个字段值是否有修改，需要对应本结构体中字段下标进行值填充**/
+    bool    updated = 6;
+
+    /** 标识是否为空  **/ //[default = false]
+    bool    isNull = 7;
+
+    /** 字段值,timestamp,Datetime是一个时间格式的文本，此处考虑使用 unix_timestamp**/
+    string    value = 8;
+
+    /** 对应数据对象原始长度，对于浮点数，在数据库中的存储格式也是一个long或者int64，待详细确认**/
+    int32    length = 9;
+
+    /**预留扩展**/
+    repeated ExtraInfo  extraInfoList = 10;
+}
+
+message RowData {
+
+      /** 字段信息，增量数据(修改前,删除前) **/
+      repeated Column      beforeColumnList = 1;
+
+      /** 字段信息，增量数据(修改后,新增后)  **/
+      repeated Column      afterColumnList = 2;
+
+      /**预留扩展**/
+      repeated ExtraInfo      extraInfoList = 3;
+}
+
+/**message row 每行变更数据的数据结构**/
+message RowChange {
+
+      /**tableId,由数据库产生**/
+      //  int64      tableId = 1;
+      /** schema name, schemaName标记的是执行对象，current标记发起执行操作的schema**/
+      string                  schemaName = 1;
+      string                  currentSchemaName = 2;
+
+      /** table name **/
+      string                  tableName = 3;
+
+      /** eventType **/
+      EventType               eventType = 4;
+
+      /** 标识是否为DDL **/
+      bool                    isDDL = 5;
+
+      /** ddl/query的sql语句  **/
+      string                  sql = 6;
+
+      /** 一次变更可能引起多行的变化  **/
+      repeated RowData        rowDataList = 7;
+
+      /** 预留扩展 **/
+      repeated ExtraInfo      extraInfoList = 8;
+
+}
+
+message ExtraInfo {
+
+      string      key       = 1;
+      string      value     = 2;
+
+}
+
+
+/**打散后的事件类型，主要用于标识事务的开始，变更数据，结束**/
+enum  EntryType{
+
+      /** default **/
+      ROWDATA = 0;
+
+      /** 心跳类型 **/
+      HEARTBEAT = 1;
+
+
+}
+
+/** 事件类型 **/
+enum  EventType {
+
+      /** 常用事件类型 **/
+      UNKNOWN = 0;
+      INSERT = 1;
+      UPDATE = 2;
+      DELETE = 3;
+      CREATE = 4;
+      ALTER = 5;
+
+      /** reset master **/
+      ERASE = 6;
+
+      QUERY = 7;
+      TRUNCATE = 8;
+      RENAME = 9;
+
+      /**CREATE INDEX**/
+      CINDEX = 10;
+      DINDEX = 11;
+      GTID = 12;
+
+      /** XA **/
+      XACOMMIT = 13;
+      XAROLLBACK = 14;
+
+      /** MASTER HEARTBEAT **/
+      MHEARTBEAT = 15;
+}
+
+/**数据库类型**/
+enum  DatabaseType {
+
+      NOTSUPPORT    = 0;
+      ORACLE        = 1;
+      MYSQL         = 2;
+      PGSQL         = 3;
+}

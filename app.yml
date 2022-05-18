@@ -1,5 +1,5 @@
 # mysql配置
-addr: 1.tcp.vip.cpolar.top:10041
+addr: 192.168.2.120:32000
 user: root
 pass: testing
 charset : utf8
@@ -37,11 +37,11 @@ web_admin_port: 8060 #web监控端口,默认8060
 target: redis # 支持redis、mongodb、elasticsearch、rocketmq、kafka、rabbitmq
 
 #redis连接配置
-redis_addrs: 127.0.0.1:6379 #redis地址，多个用逗号分隔
+redis_addrs: 192.168.2.120:32760 #redis地址，多个用逗号分隔
 #redis_group_type: cluster   # 集群类型 sentinel或者cluster
 #redis_master_name: mymaster # Master节点名称,如果group_type为sentinel则此项不能为空，为cluster此项无效
 #redis_pass: 123456 #redis密码
-redis_database: 2  #redis数据库 0-16,默认0。如果group_type为cluster此项无效
+redis_database: 0  #redis数据库 0-16,默认0。如果group_type为cluster此项无效
 
 #mongodb连接配置
 #mongodb_addrs: 127.0.0.1:27017 #mongodb连接地址，多个用逗号分隔
