@@ -64,7 +64,7 @@ type Config struct {
 	IncludeTableRegex []string `toml:"include_table_regex"`
 	ExcludeTableRegex []string `toml:"exclude_table_regex"`
 
-	// discard row event without table meta
+	// discard row event without table oracle_meta
 	DiscardNoMetaRowEvent bool `toml:"discard_no_meta_row_event"`
 
 	Dump DumpConfig `toml:"dump"`

@@ -55,9 +55,9 @@ type Canal struct {
 	cancel context.CancelFunc
 }
 
-// UnknownTableRetryPeriod canal will retry fetching unknown table's meta after UnknownTableRetryPeriod
+// UnknownTableRetryPeriod canal will retry fetching unknown table's oracle_meta after UnknownTableRetryPeriod
 var UnknownTableRetryPeriod = time.Second * time.Duration(10)
-var ErrExcludedTable = errors.New("excluded table meta")
+var ErrExcludedTable = errors.New("excluded table oracle_meta")
 
 func NewCanal(cfg *Config) (*Canal, error) {
 	c := new(Canal)
@@ -330,10 +330,10 @@ func (c *Canal) GetTable(db string, table string) (*schema.Table, error) {
 		// work around : RDS HAHeartBeat
 		// ref : https://github.com/alibaba/canal/blob/master/parse/src/main/java/com/alibaba/otter/canal/parse/inbound/mysql/dbsync/LogEventConvert.java#L385
 		// issue : https://github.com/alibaba/canal/issues/222
-		// This is a common error in RDS that canal can't get HAHealthCheckSchema's meta, so we mock a table meta.
+		// This is a common error in RDS that canal can't get HAHealthCheckSchema's oracle_meta, so we mock a table oracle_meta.
 		// If canal just skip and log error, as RDS HA heartbeat interval is very short, so too many HAHeartBeat errors will be logged.
 		if key == schema.HAHealthCheckSchema {
-			// mock ha_health_check meta
+			// mock ha_health_check oracle_meta
 			ta := &schema.Table{
 				Schema:  db,
 				Name:    table,
@@ -353,7 +353,7 @@ func (c *Canal) GetTable(db string, table string) (*schema.Table, error) {
 			c.errorTablesGetTime[key] = time.Now()
 			c.tableLock.Unlock()
 			// log error and return ErrMissingTableMeta
-			log.Errorf("canal get table meta err: %v", errors.Trace(err))
+			log.Errorf("canal get table oracle_meta err: %v", errors.Trace(err))
 			return nil, schema.ErrMissingTableMeta
 		}
 		return nil, err
