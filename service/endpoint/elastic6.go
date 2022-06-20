@@ -123,7 +123,7 @@ func (s *Elastic6Endpoint) updateIndexMapping(rule *global.Rule) error {
 		return err
 	}
 
-	if ret[rule.ElsIndex]==nil{
+	if ret[rule.ElsIndex] == nil {
 		return nil
 	}
 	retIndex := ret[rule.ElsIndex].(map[string]interface{})
@@ -133,12 +133,12 @@ func (s *Elastic6Endpoint) updateIndexMapping(rule *global.Rule) error {
 	}
 	retMaps := retIndex["mappings"].(map[string]interface{})
 
-	if retMaps["_doc"]==nil{
+	if retMaps["_doc"] == nil {
 		return nil
 	}
 	retDoc := retMaps["_doc"].(map[string]interface{})
 
-	if retDoc["properties"]==nil{
+	if retDoc["properties"] == nil {
 		return nil
 	}
 	retPros := retDoc["properties"].(map[string]interface{})
@@ -219,7 +219,7 @@ func (s *Elastic6Endpoint) Consume(from mysql.Position, rows []*model.RowRequest
 		}
 	}
 
-	if bulk.NumberOfActions()==0{
+	if bulk.NumberOfActions() == 0 {
 		return nil
 	}
 

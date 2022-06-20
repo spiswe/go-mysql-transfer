@@ -23,7 +23,7 @@ func CreateDirIfNecessary(dir string, conn *zk.Conn) error {
 	return nil
 }
 
-func CreateDirWithDataIfNecessary(dir string,data []byte, conn *zk.Conn) error {
+func CreateDirWithDataIfNecessary(dir string, data []byte, conn *zk.Conn) error {
 	exist, _, err := conn.Exists(dir)
 	if err != nil {
 		return err

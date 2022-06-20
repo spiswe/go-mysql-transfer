@@ -35,7 +35,7 @@ func (s *zkPositionStorage) Initialize() error {
 		return err
 	}
 
-	err = zookeepers.CreateDirWithDataIfNecessary(global.Cfg().ZkPositionDir(), pos ,_zkConn)
+	err = zookeepers.CreateDirWithDataIfNecessary(global.Cfg().ZkPositionDir(), pos, _zkConn)
 	if err != nil {
 		return err
 	}

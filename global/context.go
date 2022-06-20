@@ -70,7 +70,7 @@ func Initialize(configPath string) error {
 	_bootTime = time.Now()
 	_pid = syscall.Getpid()
 
-	if _config.IsCluster(){
+	if _config.IsCluster() {
 		if _config.EnableWebAdmin {
 			_currentNode = _config.Cluster.BindIp + ":" + strconv.Itoa(_config.WebAdminPort)
 		} else {

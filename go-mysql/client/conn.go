@@ -156,7 +156,7 @@ func (c *Conn) UseSSL(insecureSkipVerify bool) {
 	c.tlsConfig = &tls.Config{InsecureSkipVerify: insecureSkipVerify}
 }
 
-// SetTLSConfig: use user-specified TLS config
+// SetTLSConfig SetTLSConfig: use user-specified TLS config
 // pass to options when connect
 func (c *Conn) SetTLSConfig(config *tls.Config) {
 	c.tlsConfig = config

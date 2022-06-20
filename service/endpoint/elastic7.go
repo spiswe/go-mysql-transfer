@@ -122,7 +122,7 @@ func (s *Elastic7Endpoint) updateIndexMapping(rule *global.Rule) error {
 		return err
 	}
 
-	if ret[rule.ElsIndex]==nil{
+	if ret[rule.ElsIndex] == nil {
 		return nil
 	}
 	retIndex := ret[rule.ElsIndex].(map[string]interface{})
