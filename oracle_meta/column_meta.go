@@ -9,24 +9,24 @@ type ColumnMeta struct {
 	columnType int
 }
 
-func NewColumnMeta(name string, columnType int) (cm *ColumnMeta) {
-	return &ColumnMeta{name: name, columnType: columnType}
-}
-
-func (cm *ColumnMeta) getName() string {
+func (cm *ColumnMeta) Name() string {
 	return cm.name
 }
 
-func (cm *ColumnMeta) getType() int {
-	return cm.columnType
-}
-
-func (cm *ColumnMeta) setName(name string) {
+func (cm *ColumnMeta) SetName(name string) {
 	cm.name = name
 }
 
-func (cm *ColumnMeta) setType(columnType int) {
+func (cm *ColumnMeta) ColumnType() int {
+	return cm.columnType
+}
+
+func (cm *ColumnMeta) SetColumnType(columnType int) {
 	cm.columnType = columnType
+}
+
+func NewColumnMeta(name string, columnType int) (cm *ColumnMeta) {
+	return &ColumnMeta{name: name, columnType: columnType}
 }
 
 func (cm *ColumnMeta) clone() ColumnMeta {

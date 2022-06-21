@@ -1,4 +1,4 @@
-package service
+package oracle
 
 import "go-mysql-transfer/util/logs"
 
