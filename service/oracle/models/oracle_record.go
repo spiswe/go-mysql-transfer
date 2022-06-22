@@ -1,4 +1,4 @@
-package model
+package models
 
 import (
 	"go-mysql-transfer/service/oracle/utils"

@@ -1,9 +1,12 @@
 package oracle
 
 import (
-	"go-mysql-transfer/model"
+	"go-mysql-transfer/service/oracle/models"
 )
 
 type Instance struct {
-	instanceContext model.OracleContext
+	instanceContext models.OracleContext
+	extractor       RecordExtractor
+	applier         RecordApplier
+	translator      DataTranslator
 }

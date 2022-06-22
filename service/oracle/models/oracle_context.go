@@ -1,8 +1,8 @@
-package model
+package models
 
 import (
-	"go-mysql-transfer/model/position"
-	meta "go-mysql-transfer/oracle_meta"
+	"go-mysql-transfer/service/oracle/models/position"
+	"go-mysql-transfer/service/oracle/oracle_meta"
 	"go-mysql-transfer/util/database"
 )
 

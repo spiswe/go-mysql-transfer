@@ -1,6 +1,8 @@
-package model
+package models
 
-import meta "go-mysql-transfer/oracle_meta"
+import (
+	"go-mysql-transfer/service/oracle/oracle_meta"
+)
 
 type ColumnValue struct {
 	column meta.ColumnMeta
