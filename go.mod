@@ -19,6 +19,7 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/siddontang/go-log v0.0.0-20180807004314-8d05993dda07
 	github.com/siddontang/go-mysql v1.1.0
+	github.com/sijms/go-ora/v2 v2.4.25
 	github.com/sony/sonyflake v1.0.0
 	github.com/streadway/amqp v1.0.0
 	github.com/vmihailenco/msgpack v4.0.4+incompatible
@@ -62,7 +63,6 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
-	github.com/mattn/go-oci8 v0.1.1 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect

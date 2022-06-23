@@ -258,6 +258,16 @@ github.com/siddontang/go-mysql/packet
 github.com/siddontang/go-mysql/replication
 github.com/siddontang/go-mysql/schema
 github.com/siddontang/go-mysql/utils
+# github.com/sijms/go-ora/v2 v2.4.25
+## explicit; go 1.17
+github.com/sijms/go-ora/v2
+github.com/sijms/go-ora/v2/advanced_nego
+github.com/sijms/go-ora/v2/advanced_nego/ntlmssp
+github.com/sijms/go-ora/v2/converters
+github.com/sijms/go-ora/v2/network
+github.com/sijms/go-ora/v2/network/security
+github.com/sijms/go-ora/v2/network/security/md4
+github.com/sijms/go-ora/v2/trace
 # github.com/sirupsen/logrus v1.4.2
 ## explicit
 github.com/sirupsen/logrus

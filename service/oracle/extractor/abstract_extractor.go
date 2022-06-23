@@ -19,9 +19,17 @@ type RecordExtractor interface {
 }
 
 type AbstractRecordExtractor struct {
-	oracle.AbstractLifeCycle
+	absLifeCycle  oracle.AbstractLifeCycle
 	extractStatus models.ExtractStatus
 	tracer        oracle.ProcessTracer
+}
+
+func (a *AbstractRecordExtractor) AbsLifeCycle() oracle.AbstractLifeCycle {
+	return a.absLifeCycle
+}
+
+func (a *AbstractRecordExtractor) SetAbsLifeCycle(absLifeCycle oracle.AbstractLifeCycle) {
+	a.absLifeCycle = absLifeCycle
 }
 
 func (are *AbstractRecordExtractor) extract() []models.Record {

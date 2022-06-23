@@ -91,11 +91,11 @@ func (o *OracleContext) setTablePKs(tablePKs map[string][]string) {
 	o.tablePKs = tablePKs
 }
 
-func (o *OracleContext) getTablePKs() map[string][]string {
+func (o *OracleContext) TablePKs() map[string][]string {
 	return o.tablePKs
 }
 
-func (o *OracleContext) getMViewLogType() string {
+func (o *OracleContext) MViewLogType() string {
 	return o.mViewLogType
 }
 
@@ -103,7 +103,7 @@ func (o *OracleContext) setLastPosition(position position.AbstractPosition) {
 	o.lastPosition = position
 }
 
-func (o *OracleContext) getOnceCrawNum() int {
+func (o *OracleContext) OnceCrawNum() int {
 	return o.onceCrawNum
 }
 
@@ -111,11 +111,11 @@ func (o *OracleContext) setOnceCrawNum(onceCrawNum int) {
 	o.onceCrawNum = onceCrawNum
 }
 
-func (o *OracleContext) getTargetDS() database.DataSource {
+func (o *OracleContext) TargetDS() database.DataSource {
 	return o.targetDS
 }
 
-func (o *OracleContext) getSourceDS() database.DataSource {
+func (o *OracleContext) SourceDS() database.DataSource {
 	return o.sourceDS
 }
 
@@ -151,7 +151,7 @@ func (o *OracleContext) getTargetCodeEncoding() string {
 	return o.TargetCodeEncoding
 }
 
-func (o *OracleContext) getTableMeta() meta.Table {
+func (o *OracleContext) TableMeta() meta.Table {
 	return o.tableMeta
 }
 
@@ -195,15 +195,15 @@ func (o *OracleContext) cloneOracleContext() *OracleContext {
 	return NewOracleContext(
 		o.isIgnoreSchema(),
 		o.getRunMode(),
-		o.getOnceCrawNum(),
+		o.OnceCrawNum(),
 		o.getTPSLimit(),
-		o.getSourceDS(),
-		o.getTargetDS(),
+		o.SourceDS(),
+		o.TargetDS(),
 		o.isBatchApply(),
 		o.isSkipApplierException(),
 		o.getSourceCodeEncoding(),
 		o.getTargetCodeEncoding(),
-		o.getMViewLogType(),
-		o.getTablePKs(),
+		o.MViewLogType(),
+		o.TablePKs(),
 	)
 }

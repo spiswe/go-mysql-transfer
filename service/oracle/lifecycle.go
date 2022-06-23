@@ -11,11 +11,11 @@ type LifeCycle interface {
 }
 
 type AbstractLifeCycle struct {
-	Running bool `default:"false" json:"running,omitempty"`
+	running bool `default:"false" json:"running,omitempty"`
 }
 
 func (alc *AbstractLifeCycle) isStart() bool {
-	return alc.Running
+	return alc.running
 }
 
 func (alc *AbstractLifeCycle) isStop() bool {
@@ -23,18 +23,18 @@ func (alc *AbstractLifeCycle) isStop() bool {
 }
 
 func (alc *AbstractLifeCycle) start() {
-	if alc.Running {
+	if alc.running {
 		return
 	} else {
-		alc.Running = true
+		alc.running = true
 	}
 }
 
 func (alc *AbstractLifeCycle) stop() {
-	if !alc.Running {
+	if !alc.running {
 		return
 	} else {
-		alc.Running = false
+		alc.running = false
 	}
 }
 

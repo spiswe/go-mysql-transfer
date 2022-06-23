@@ -4,9 +4,11 @@ table column oracle_meta
 
 package meta
 
+import go_ora "github.com/sijms/go-ora/v2"
+
 type ColumnMeta struct {
 	name       string
-	columnType int
+	columnType go_ora.OracleType
 }
 
 func (cm *ColumnMeta) Name() string {
@@ -17,15 +19,15 @@ func (cm *ColumnMeta) SetName(name string) {
 	cm.name = name
 }
 
-func (cm *ColumnMeta) ColumnType() int {
+func (cm *ColumnMeta) ColumnType() go_ora.OracleType {
 	return cm.columnType
 }
 
-func (cm *ColumnMeta) SetColumnType(columnType int) {
+func (cm *ColumnMeta) SetColumnType(columnType go_ora.OracleType) {
 	cm.columnType = columnType
 }
 
-func NewColumnMeta(name string, columnType int) (cm *ColumnMeta) {
+func NewColumnMeta(name string, columnType go_ora.OracleType) (cm *ColumnMeta) {
 	return &ColumnMeta{name: name, columnType: columnType}
 }
 
