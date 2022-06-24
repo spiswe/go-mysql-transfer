@@ -7,11 +7,13 @@ import (
 	"strings"
 )
 
+var TracerController = &ProcessTracer{}
+
 const (
-	FullFormat  = "{未启动:%d, 全量中:%d, 已完成:%d, 异常数:%d}"
-	IncFormat   = "{未启动:%d, 增量中:%d, 已追上:%d, 异常数:%d}"
-	CheckFormat = "{未启动:%d, 对比中:%d, 已完成:%d, 异常数:%d}"
-	AllFormat   = "{未启动:%d, 全量中:%d, 增量中:%d, 已追上:%d, 异常数:%d}"
+	FullFormat  = "{Preparing: %d, fulling: %d, success: %d, failed: %d}"
+	IncFormat   = "{Preparing:%d, incing: %d, success: %d, failed: %d}"
+	CheckFormat = "{Preparing:%d, checking: %d, success:%d, failed:%d}"
+	AllFormat   = "{Preparing:%d, fulling: %d, checking: %d, success: %d, failed: %d}"
 )
 
 type ProcessTracer struct {
@@ -24,13 +26,13 @@ func NewProcessTracer(mode models.RunMode, total int) *ProcessTracer {
 	return &ProcessTracer{total: total, mode: mode}
 }
 
-func (pt *ProcessTracer) update(tableName string, progress models.ProgressStatus) {
+func (pt *ProcessTracer) Update(tableName string, progress models.ProgressStatus) {
 	if pt.status[tableName] != models.FAILED {
 		pt.status[tableName] = progress
 	}
 }
 
-func (pt *ProcessTracer) print(detail bool) {
+func (pt *ProcessTracer) Print(detail bool) {
 	var fulling, incing, failed, success = 0, 0, 0, 0
 	var fullingTables, incingTables, failedTables, successTables []string
 	var msg = ""
@@ -70,21 +72,21 @@ func (pt *ProcessTracer) print(detail bool) {
 		if fulling > 0 {
 			tableListString = strings.Join(fullingTables, ",")
 			if pt.mode == models.CHECK {
-				logs.Info("对比中: " + tableListString)
+				logs.Info("checking: " + tableListString)
 			} else {
-				logs.Info("全量中: " + tableListString)
+				logs.Info("fulling: " + tableListString)
 			}
 		}
 		if incing > 0 {
 			tableListString = strings.Join(incingTables, ",")
-			logs.Info("增量中: " + tableListString)
+			logs.Info("incing: " + tableListString)
 		}
 		if failed > 0 {
 			tableListString = strings.Join(failedTables, ",")
-			logs.Info("异常对象: " + tableListString)
+			logs.Info("failed: " + tableListString)
 		}
 		tableListString = strings.Join(successTables, ",")
-		logs.Info("已完成: " + tableListString)
+		logs.Info("success: " + tableListString)
 	}
 
 }

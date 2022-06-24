@@ -21,7 +21,7 @@ func (a *AbstractOracleRecordExtractor) SetExtractor(extractor AbstractRecordExt
 }
 
 func (a *AbstractRecordExtractor) getColumnValue(
-	rs *sql.Row,
+	rs *sql.Rows,
 	encoding string,
 	col meta.ColumnMeta) models.ColumnValue {
 

@@ -1,9 +1,9 @@
 package models
 
 import (
+	"go-mysql-transfer/service/oracle/database"
 	"go-mysql-transfer/service/oracle/models/position"
 	"go-mysql-transfer/service/oracle/oracle_meta"
-	"go-mysql-transfer/util/database"
 )
 
 type OracleContext struct {
@@ -87,7 +87,7 @@ func NewOracleContext(
 	}
 }
 
-func (o *OracleContext) setTablePKs(tablePKs map[string][]string) {
+func (o *OracleContext) SetTablePKs(tablePKs map[string][]string) {
 	o.tablePKs = tablePKs
 }
 
@@ -99,7 +99,7 @@ func (o *OracleContext) MViewLogType() string {
 	return o.mViewLogType
 }
 
-func (o *OracleContext) setLastPosition(position position.AbstractPosition) {
+func (o *OracleContext) SetLastPosition(position position.AbstractPosition) {
 	o.lastPosition = position
 }
 
@@ -107,7 +107,7 @@ func (o *OracleContext) OnceCrawNum() int {
 	return o.onceCrawNum
 }
 
-func (o *OracleContext) setOnceCrawNum(onceCrawNum int) {
+func (o *OracleContext) SetOnceCrawNum(onceCrawNum int) {
 	o.onceCrawNum = onceCrawNum
 }
 
@@ -119,35 +119,35 @@ func (o *OracleContext) SourceDS() database.DataSource {
 	return o.sourceDS
 }
 
-func (o *OracleContext) setTargetDS(targetDS database.DataSource) {
+func (o *OracleContext) SetTargetDS(targetDS database.DataSource) {
 	o.targetDS = targetDS
 }
 
-func (o *OracleContext) setSourceDS(SourceDS database.DataSource) {
+func (o *OracleContext) SetSourceDS(SourceDS database.DataSource) {
 	o.sourceDS = SourceDS
 }
 
-func (o *OracleContext) isBatchApply() bool {
+func (o *OracleContext) IsBatchApply() bool {
 	return o.batchApply
 }
 
-func (o *OracleContext) setBatchApply(batchApply bool) {
+func (o *OracleContext) SetBatchApply(batchApply bool) {
 	o.batchApply = batchApply
 }
 
-func (o *OracleContext) getSourceCodeEncoding() string {
+func (o *OracleContext) GetSourceCodeEncoding() string {
 	return o.SourceCodeEncoding
 }
 
-func (o *OracleContext) setSourceCodeEncoding(sourceCodeEncoding string) {
+func (o *OracleContext) SetSourceCodeEncoding(sourceCodeEncoding string) {
 	o.SourceCodeEncoding = sourceCodeEncoding
 }
 
-func (o *OracleContext) setTargetCodeEncoding(targetCodeEncoding string) {
+func (o *OracleContext) SetTargetCodeEncoding(targetCodeEncoding string) {
 	o.TargetCodeEncoding = targetCodeEncoding
 }
 
-func (o *OracleContext) getTargetCodeEncoding() string {
+func (o *OracleContext) GetTargetCodeEncoding() string {
 	return o.TargetCodeEncoding
 }
 
@@ -155,54 +155,54 @@ func (o *OracleContext) TableMeta() meta.Table {
 	return o.tableMeta
 }
 
-func (o *OracleContext) setTableMeta(tableMeta meta.Table) {
+func (o *OracleContext) SetTableMeta(tableMeta meta.Table) {
 	o.tableMeta = tableMeta
 }
 
-func (o *OracleContext) getTPSLimit() int {
+func (o *OracleContext) GetTPSLimit() int {
 	return o.TPSLimit
 }
 
-func (o *OracleContext) setTPSLimit(TPSLimit int) {
+func (o *OracleContext) SetTPSLimit(TPSLimit int) {
 	o.TPSLimit = TPSLimit
 }
 
-func (o *OracleContext) getRunMode() RunMode {
+func (o *OracleContext) GetRunMode() RunMode {
 	return o.runMode
 }
 
-func (o *OracleContext) setRunMode(mode RunMode) {
+func (o *OracleContext) SetRunMode(mode RunMode) {
 	o.runMode = mode
 }
 
-func (o *OracleContext) isIgnoreSchema() bool {
+func (o *OracleContext) IsIgnoreSchema() bool {
 	return o.ignoreSchema
 }
 
-func (o *OracleContext) setIgnoreSchema(ignoreSchema bool) {
+func (o *OracleContext) SetIgnoreSchema(ignoreSchema bool) {
 	o.ignoreSchema = ignoreSchema
 }
 
-func (o *OracleContext) setSkipApplierException(skipApplierException bool) {
+func (o *OracleContext) SetSkipApplierException(skipApplierException bool) {
 	o.skipApplierException = skipApplierException
 }
 
-func (o *OracleContext) isSkipApplierException() bool {
+func (o *OracleContext) IsSkipApplierException() bool {
 	return o.skipApplierException
 }
 
-func (o *OracleContext) cloneOracleContext() *OracleContext {
+func (o *OracleContext) CloneOracleContext() *OracleContext {
 	return NewOracleContext(
-		o.isIgnoreSchema(),
-		o.getRunMode(),
+		o.IsIgnoreSchema(),
+		o.GetRunMode(),
 		o.OnceCrawNum(),
-		o.getTPSLimit(),
+		o.GetTPSLimit(),
 		o.SourceDS(),
 		o.TargetDS(),
-		o.isBatchApply(),
-		o.isSkipApplierException(),
-		o.getSourceCodeEncoding(),
-		o.getTargetCodeEncoding(),
+		o.IsBatchApply(),
+		o.IsSkipApplierException(),
+		o.GetSourceCodeEncoding(),
+		o.GetTargetCodeEncoding(),
 		o.MViewLogType(),
 		o.TablePKs(),
 	)

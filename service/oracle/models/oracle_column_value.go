@@ -4,6 +4,7 @@ import (
 	"go-mysql-transfer/service/oracle/oracle_meta"
 )
 
+// ColumnValue
 type ColumnValue struct {
 	column meta.ColumnMeta
 	value  interface{}

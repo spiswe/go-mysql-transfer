@@ -68,6 +68,10 @@ func NewTable(tableType string, schema string, name string) *Table {
 	return &Table{tableType: tableType, schema: schema, name: name}
 }
 
+func (t *Table) GetFullName() string {
+	return t.schema + t.name
+}
+
 func NewTableWithColumn(
 	tableType string,
 	schema string,
@@ -146,9 +150,5 @@ func (t *Table) ToString() string {
 //
 //func (t *Table) SetExtKey(extKey string) {
 //	t.extKey = extKey
-//}
-//
-//func (t *Table) GetFullName() string {
-//	return t.schema + t.name
 //}
 //
