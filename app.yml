@@ -4,8 +4,28 @@ user: root
 pass: testing
 charset : utf8
 slave_id: 1001121 #slave ID
-flavor: mysql #mysql or mariadb,默认mysql
+flavor: mysql #mysql or mariadb,默认mysql // 增加oracle
 mysqldump: /opt/homebrew/opt/mysql-client@5.7/bin/mysqldump
+
+# Oracle 配置
+oracle_addr: 1.tcp.vip.cpolar.top
+oracle_port: 10041
+oracle_user: makang
+oracle_password: makang
+oracle_service: LHR11G
+oracle_encoding: AL32UTF8
+oracle_run_mode: full
+
+# oracle 抽取配置
+oracle_batch_apply: true
+oracle_once_craw_num: 200
+oracle_tps_limit: 1000
+oracle_ignore_schema: false
+oracle_applier_exception: false
+oracle_table_white_list: t1,t2,t3,t4,t5
+oracle_table_black_list: t6,t7,t8,t9
+
+
 
 #系统相关配置
 #data_dir: D:\\transfer #应用产生的数据存放地址，包括日志、缓存数据等，默认当前运行目录下store文件夹

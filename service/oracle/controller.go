@@ -1,15 +1,16 @@
 package oracle
 
 import (
-	"database/sql"
-	go_ora "github.com/sijms/go-ora/v2"
+	"go-mysql-transfer/global"
 	"go-mysql-transfer/service/oracle/database"
 	"go-mysql-transfer/service/oracle/models"
-	"go-mysql-transfer/util/logs"
+	meta "go-mysql-transfer/service/oracle/oracle_meta"
+	"go-mysql-transfer/service/oracle/translator"
+	"strings"
 )
 
 type Controller struct {
-	configuration     Configuration
+	configuration     *global.Config
 	dataSourceFactory database.DataSourceFactory
 	//config
 	// todo
@@ -25,15 +26,94 @@ type Controller struct {
 	instance      Instance
 }
 
-func NewController(configuration Configuration) *Controller {
+type TableHolder struct {
+	table        meta.Table
+	ignoreSchema bool
+	translator   translator.DataTranslator
+}
+
+func NewTableHolder(table meta.Table) *TableHolder {
+	return &TableHolder{table: table}
+}
+
+func NewController(configuration *global.Config) *Controller {
 	return &Controller{configuration: configuration}
 }
 
-func (c *Controller) Configuration() Configuration {
+func (c *Controller) start() {
+	var dbconfig map[database.DataSourceConfig]database.DataSource
+	sourceConfig := database.NewDataSourceConfig(c.configuration)
+	dbconfig[*sourceConfig] = database.DataSource{}
+
+	// connect to all databases
+	c.dataSourceFactory.SetDataSources(dbconfig)
+	c.dataSourceFactory.Start() // set all database connection
+
+	c.SetRunMode(models.RunMode(c.configuration.OracleRunMode))
+	c.SetSourceDBType(database.DBType(c.configuration.Flavor))
+	// todo, maybe it is useless
+	c.SetTargetDBType(database.DBType(c.configuration.Flavor))
+	c.globalContext = c.InitGlobalContext()
+	// todo add alarm
+	// todo add extractorDump, statBufferSize, statePrintInterval
+
+}
+
+func (c *Controller) TableHolder(table meta.Table) {}
+
+//func (c *Controller) InitTables() []TableHolder {
+//	logs.Info("check table privileges ...")
+//	tableWhiteList := c.configuration.OracleTableWhiteList
+//	tableBlackList := c.configuration.OracleTableBlackList
+//	isEmpty := true
+//	for _, table := range tableWhiteList {
+//		if len(table) == 0 {
+//			isEmpty = false
+//			break
+//		}
+//	}
+//	var tables []TableHolder
+//	// target DBType is not important
+//	if !isEmpty {
+//		for _, obj := range tableWhiteList {
+//			whiteTable := c.getTable(obj)
+//			if !c.isBlackTable(whiteTable, tableBlackList) {
+//				tableInfo := strings.Split(whiteTable, ".")
+//				ignoreSchema := false
+//				if len(tableInfo) == 1 {
+//					whiteTables :=
+//				}
+//			}
+//
+//		}
+//	}
+//}
+
+func (c *Controller) isBlackTable(table string, tableBlackList []string) bool {
+	for _, obj := range tableBlackList {
+		if table == obj {
+			return true
+		} else {
+			return false
+		}
+	}
+	return false
+}
+
+func (c *Controller) getTable(tableName string) string {
+	paramArray := strings.Split(tableName, "#")
+	if len(paramArray) >= 1 && paramArray[0] != "" {
+		return paramArray[0]
+	} else {
+		return ""
+	}
+}
+
+func (c *Controller) Configuration() *global.Config {
 	return c.configuration
 }
 
-func (c *Controller) SetConfiguration(configuration Configuration) {
+func (c *Controller) SetConfiguration(configuration *global.Config) {
 	c.configuration = configuration
 }
 
@@ -94,18 +174,22 @@ func (c *Controller) SetInstance(instance Instance) {
 }
 
 // InitDataSource todo need to split different database type && do not use to modify code
-//func (c *Controller) InitDataSource(dbType database.DBType) database.DataSource {
-func (c *Controller) InitDataSource(dbType database.DBType) *sql.DB {
-	// todo use config to add
-	server := "192.168.2.120"
-	port := 15122 // need int
-	service := "LHR11G"
-	user := "makang"
-	password := "makang"
-	oracleUrl := go_ora.BuildUrl(server, port, service, user, password, nil)
-	db, err := sql.Open("oracle", oracleUrl)
-	if err != nil {
-		logs.Error("build database connection error " + err.Error())
-	}
-	return db
+func (c *Controller) InitDataSource(initType string) database.DataSource {
+	dataSourceConfig := database.NewDataSourceConfig(global.Cfg())
+	return c.dataSourceFactory.GetDataSource(*dataSourceConfig)
+}
+
+func (c *Controller) InitGlobalContext() models.OracleContext {
+	context := models.OracleContext{}
+	//context.SetSourceDS()
+	context.SetSourceDS(c.InitDataSource("source"))
+	context.SetSourceCodeEncoding(c.configuration.OracleEncoding)
+	context.SetTargetCodeEncoding(c.configuration.OracleEncoding)
+	context.SetBatchApply(c.configuration.OracleBatchApply)
+	context.SetOnceCrawNum(c.configuration.OracleCrawNum)
+	context.SetTPSLimit(c.configuration.OracleTPSLimit)
+	context.SetIgnoreSchema(c.configuration.OracleIgnoreSchema)
+	context.SetSkipApplierException(c.configuration.OracleSkipApplierException)
+	context.SetRunMode(c.runMode)
+	return context
 }

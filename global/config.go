@@ -111,6 +111,22 @@ type Config struct {
 
 	isReserveRawData bool //保留原始数据
 	isMQ             bool //是否消息队列
+
+	// ------------------- Oracle -----------------
+	OracleAddr                 string   `yaml:"oracle_addr"` // oracle server addr
+	OraclePort                 int      `yaml:"oracle_port"`
+	OracleService              string   `yaml:"oracle_service"`
+	OracleUser                 string   `yaml:"oracle_user"`
+	OraclePassword             string   `yaml:"oracle_password"`
+	OracleEncoding             string   `yaml:"oracle_encoding"`
+	OracleRunMode              int      `yaml:"oracle_run_mode"`
+	OracleBatchApply           bool     `yaml:"oracle_batch_apply"`
+	OracleCrawNum              int      `yaml:"oracle_craw_num"`
+	OracleTPSLimit             int      `yaml:"oracle_tps_limit"`
+	OracleIgnoreSchema         bool     `yaml:"oracle_ignore_schema"`
+	OracleSkipApplierException bool     `yaml:"oracle_skip_applier_exception"`
+	OracleTableWhiteList       []string `yaml:"oracle_table_white_list"`
+	OracleTableBlackList       []string `yaml:"oracle_table_black_list"`
 }
 
 type Cluster struct {

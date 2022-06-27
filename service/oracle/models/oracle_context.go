@@ -12,7 +12,7 @@ type OracleContext struct {
 	ignoreSchema         bool                      // 设置是否忽略schema
 	runMode              RunMode                   // 运行模式
 	onceCrawNum          int                       // 单次提取记录数量
-	TPSLimit             int                       `default:"0"` // 0 及以下代表不限制
+	tpsLimit             int                       `default:"0"` // 0 及以下代表不限制
 	sourceDS             database.DataSource       // datasource
 	targetDS             database.DataSource       // target datasource
 	batchApply           bool                      // 是否批量
@@ -45,7 +45,7 @@ func NewOracleContextFull(
 		ignoreSchema:         ignoreSchema,
 		runMode:              runMode,
 		onceCrawNum:          onceCrawNum,
-		TPSLimit:             TPSLimit,
+		tpsLimit:             TPSLimit,
 		sourceDS:             sourceDS,
 		targetDS:             targetDS,
 		batchApply:           batchApply,
@@ -75,7 +75,7 @@ func NewOracleContext(
 		ignoreSchema:         ignoreSchema,
 		runMode:              runMode,
 		onceCrawNum:          onceCrawNum,
-		TPSLimit:             TPSLimit,
+		tpsLimit:             TPSLimit,
 		sourceDS:             sourceDS,
 		targetDS:             targetDS,
 		batchApply:           batchApply,
@@ -160,11 +160,11 @@ func (o *OracleContext) SetTableMeta(tableMeta meta.Table) {
 }
 
 func (o *OracleContext) GetTPSLimit() int {
-	return o.TPSLimit
+	return o.tpsLimit
 }
 
 func (o *OracleContext) SetTPSLimit(TPSLimit int) {
-	o.TPSLimit = TPSLimit
+	o.tpsLimit = TPSLimit
 }
 
 func (o *OracleContext) GetRunMode() RunMode {
