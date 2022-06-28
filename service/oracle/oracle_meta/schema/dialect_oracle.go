@@ -21,6 +21,19 @@ const oracleTableNamesWithSchema = `
 		table_name
 `
 
+const oracleTableNamesBySchema = `
+	SELECT
+		owner,
+		table_name
+	FROM
+		all_tables
+	WHERE
+		owner=:1
+	ORDER BY
+		owner,
+		table_name
+`
+
 const oracleViewNamesWithSchema = `
 	SELECT
 		owner,
@@ -84,10 +97,17 @@ func (oracleDialect) PrimaryKey(db *sql.DB, schema, name string) ([]string, erro
 	return fetchNames(db, oraclePrimaryKeyWithSchema, schema, name)
 }
 
-func (oracleDialect) TableNames(db *sql.DB) ([][2]string, error) {
-	return fetchObjectNames(db, oracleTableNamesWithSchema)
+func (oracleDialect) TableNames(db *sql.DB, schema string) ([][2]string, error) {
+	if schema == "" {
+		return fetchObjectNames(db, oracleTableNamesWithSchema)
+	}
+	return fetchObjectNamesBySchema(db, oracleTableNamesBySchema, schema)
 }
 
 func (oracleDialect) ViewNames(db *sql.DB) ([][2]string, error) {
 	return fetchObjectNames(db, oracleViewNamesWithSchema)
 }
+
+//func (oracleDialect) TableNamesWithOutSchema(db *sql.DB, schema string) ([][2]string, error) {
+//	return fetchObjectNamesWithSchema(db, oracleTableNamesWithoutSchema, schema)
+//}

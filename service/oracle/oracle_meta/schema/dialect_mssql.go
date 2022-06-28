@@ -124,7 +124,7 @@ func (mssqlDialect) PrimaryKey(db *sql.DB, schema, name string) ([]string, error
 	return fetchNames(db, mssqlPrimaryKeyWithSchema, schema, name)
 }
 
-func (mssqlDialect) TableNames(db *sql.DB) ([][2]string, error) {
+func (mssqlDialect) TableNames(db *sql.DB, schema string) ([][2]string, error) {
 	return fetchObjectNames(db, mssqlTableNamesWithSchema)
 }
 

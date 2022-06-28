@@ -6,6 +6,7 @@ import (
 	"go-mysql-transfer/service/oracle/models"
 	meta "go-mysql-transfer/service/oracle/oracle_meta"
 	"go-mysql-transfer/service/oracle/translator"
+	"go-mysql-transfer/util/logs"
 	"strings"
 )
 
@@ -61,33 +62,69 @@ func (c *Controller) start() {
 
 func (c *Controller) TableHolder(table meta.Table) {}
 
-//func (c *Controller) InitTables() []TableHolder {
-//	logs.Info("check table privileges ...")
-//	tableWhiteList := c.configuration.OracleTableWhiteList
-//	tableBlackList := c.configuration.OracleTableBlackList
-//	isEmpty := true
-//	for _, table := range tableWhiteList {
-//		if len(table) == 0 {
-//			isEmpty = false
-//			break
-//		}
-//	}
-//	var tables []TableHolder
-//	// target DBType is not important
-//	if !isEmpty {
-//		for _, obj := range tableWhiteList {
-//			whiteTable := c.getTable(obj)
-//			if !c.isBlackTable(whiteTable, tableBlackList) {
-//				tableInfo := strings.Split(whiteTable, ".")
-//				ignoreSchema := false
-//				if len(tableInfo) == 1 {
-//					whiteTables :=
-//				}
-//			}
-//
-//		}
-//	}
-//}
+// InitTables todo 可能存在大小写问题，待测试确认
+func (c *Controller) InitTables() []TableHolder {
+	logs.Info("check table privileges ...")
+	tableWhiteList := c.configuration.OracleTableWhiteList
+	tableBlackList := c.configuration.OracleTableBlackList
+	isEmpty := true
+	for _, table := range tableWhiteList {
+		if len(table) == 0 {
+			isEmpty = false
+			break
+		}
+	}
+	var tables []TableHolder
+	// target DBType is not important
+	if !isEmpty {
+		for _, obj := range tableWhiteList {
+			whiteTable := c.getTable(obj)
+			if !c.isBlackTable(whiteTable, tableBlackList) {
+				tableInfo := strings.Split(whiteTable, ".")
+				ignoreSchema := false
+				var whiteTables []meta.Table
+				if len(tableInfo) == 1 {
+					whiteTables = meta.TableMetaGeneratorController.
+						GetTableMetasWithoutColumn(c.globalContext.SourceDS(), "", tableInfo[1])
+					ignoreSchema = true
+				} else if len(tableInfo) == 2 {
+					whiteTables = meta.TableMetaGeneratorController.
+						GetTableMetasWithoutColumn(c.globalContext.SourceDS(), tableInfo[0], tableInfo[1])
+				} else {
+					logs.Error("table " + whiteTable + " is not valid")
+				}
+
+				if len(whiteTables) == 0 {
+					logs.Error("table " + whiteTable + " is not found")
+				}
+				//for (Table table : whiteTables) {
+				//	if (!isBlackTable(table.getName(), tableBlackList)
+				//	&& !isBlackTable(table.getFullName(), tableBlackList)) {
+				//		TableMetaGenerator.buildColumns(globalContext.getSourceDs(), table);
+				//		// 构建一下拆分条件
+				//		DataTranslator translator = buildExtKeys(table, (String) obj, targetDbType);
+				//		TableHolder holder = new TableHolder(table);
+				//		holder.ignoreSchema = ignoreSchema;
+				//		holder.translator = translator;
+				//		if (!tables.contains(holder)) {
+				//			tables.add(holder);
+				//		}
+				//	}
+				//}
+				for _, table := range whiteTables {
+					if (!c.isBlackTable(table.Name(), tableBlackList)) &&
+						(!c.isBlackTable(table.GetFullName(), tableBlackList)) {
+
+					}
+				}
+
+			} else {
+
+			}
+
+		}
+	}
+}
 
 func (c *Controller) isBlackTable(table string, tableBlackList []string) bool {
 	for _, obj := range tableBlackList {

@@ -90,7 +90,7 @@ func (postgresDialect) PrimaryKey(db *sql.DB, schema, name string) ([]string, er
 	return fetchNames(db, postgresPrimaryKeyWithSchema, schema, name)
 }
 
-func (postgresDialect) TableNames(db *sql.DB) ([][2]string, error) {
+func (postgresDialect) TableNames(db *sql.DB, schema string) ([][2]string, error) {
 	return fetchObjectNames(db, postgresTableNamesWithSchema)
 }
 

@@ -61,7 +61,7 @@ func (sqliteDialect) PrimaryKey(db *sql.DB, schema, name string) ([]string, erro
 	return fetchNames(db, sqlitePrimaryKey, "", name)
 }
 
-func (sqliteDialect) TableNames(db *sql.DB) ([][2]string, error) {
+func (sqliteDialect) TableNames(db *sql.DB, schema string) ([][2]string, error) {
 	return fetchObjectNames(db, sqliteTableNamesWithSchema)
 }
 

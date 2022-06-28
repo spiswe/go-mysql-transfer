@@ -86,7 +86,7 @@ func (mysqlDialect) PrimaryKey(db *sql.DB, schema, name string) ([]string, error
 	return fetchNames(db, mysqlPrimaryKeyWithSchema, schema, name)
 }
 
-func (mysqlDialect) TableNames(db *sql.DB) ([][2]string, error) {
+func (mysqlDialect) TableNames(db *sql.DB, schema string) ([][2]string, error) {
 	return fetchObjectNames(db, mysqlTableNamesWithSchema)
 }
 

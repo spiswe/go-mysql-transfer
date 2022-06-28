@@ -41,12 +41,12 @@ func (e UnknownDriverError) Error() string {
 // Tables returns column type metadata for all tables in the current schema.
 //
 // The returned map is keyed by table name tuples.
-func Tables(db *sql.DB) (map[[2]string][]*sql.ColumnType, error) {
+func Tables(db *sql.DB, schema string) (map[[2]string][]*sql.ColumnType, error) {
 	d, err := getDialect(db)
 	if err != nil {
 		return nil, err
 	}
-	names, err := d.TableNames(db)
+	names, err := d.TableNames(db, schema)
 	if err != nil {
 		return nil, err
 	}
@@ -93,12 +93,12 @@ func Views(db *sql.DB) (map[[2]string][]*sql.ColumnType, error) {
 // TableNames returns a list of all table names.
 //
 // Each name consists of a [2]string tuple: schema name, table name.
-func TableNames(db *sql.DB) ([][2]string, error) {
+func TableNames(db *sql.DB, schema string) ([][2]string, error) {
 	d, err := getDialect(db)
 	if err != nil {
 		return nil, err
 	}
-	return d.TableNames(db)
+	return d.TableNames(db, schema)
 }
 
 // ViewNames returns a list of all view names.
@@ -184,6 +184,31 @@ func fetchObjectNames(db *sql.DB, query string) ([][2]string, error) {
 		names = append(names, [2]string{s, n})
 	}
 	return names, nil
+}
+
+func fetchObjectNamesBySchema(db *sql.DB, query, schema string) ([][2]string, error) {
+
+	var rows *sql.Rows
+	var err error
+
+	rows, err = db.Query(query, schema)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	// Scan result into list of names.
+	var names [][2]string
+	s := ""
+	n := ""
+	for rows.Next() {
+		err = rows.Scan(&s, &n)
+		if err != nil {
+			return nil, err
+		}
+		names = append(names, [2]string{s, n})
+	}
+	return names, nil
+
 }
 
 func getDialect(db *sql.DB) (dialect, error) {

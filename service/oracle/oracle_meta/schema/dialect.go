@@ -10,7 +10,7 @@ type dialect interface {
 
 	ColumnTypes(db *sql.DB, schema, name string) ([]*sql.ColumnType, error)
 	PrimaryKey(db *sql.DB, schema, name string) ([]string, error)
-	TableNames(db *sql.DB) ([][2]string, error)
+	TableNames(db *sql.DB, schema string) ([][2]string, error)
 	ViewNames(db *sql.DB) ([][2]string, error)
 }
 
@@ -34,7 +34,7 @@ var driverDialect = map[string]dialect{
 	"*ora.Drv":                     oracleDialect{},   // gopkg.in/rana/ora.v4
 	"*oci8.OCI8DriverStruct":       oracleDialect{},   // github.com/mattn/go-oci8
 	"*oci8.OCI8Driver":             oracleDialect{},   // github.com/mattn/go-oci8
-	"*go_ora.OracleDriver":         oracleDialect{},   // github.com/sijms/go-ora/v2
+	"*go_ora.OracleDriver":         oracleDialect{},   // github.com/mattn/go-oci8
 }
 
 // TODO Should we expose a method of registering a driver string/dialect in our registry?
