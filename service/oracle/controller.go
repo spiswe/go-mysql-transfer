@@ -97,23 +97,12 @@ func (c *Controller) InitTables() []TableHolder {
 				if len(whiteTables) == 0 {
 					logs.Error("table " + whiteTable + " is not found")
 				}
-				//for (Table table : whiteTables) {
-				//	if (!isBlackTable(table.getName(), tableBlackList)
-				//	&& !isBlackTable(table.getFullName(), tableBlackList)) {
-				//		TableMetaGenerator.buildColumns(globalContext.getSourceDs(), table);
-				//		// 构建一下拆分条件
-				//		DataTranslator translator = buildExtKeys(table, (String) obj, targetDbType);
-				//		TableHolder holder = new TableHolder(table);
-				//		holder.ignoreSchema = ignoreSchema;
-				//		holder.translator = translator;
-				//		if (!tables.contains(holder)) {
-				//			tables.add(holder);
-				//		}
-				//	}
-				//}
+
 				for _, table := range whiteTables {
 					if (!c.isBlackTable(table.Name(), tableBlackList)) &&
 						(!c.isBlackTable(table.GetFullName(), tableBlackList)) {
+						meta.TableMetaGeneratorController.BuildColumns(c.globalContext.SourceDS(), &table)
+						// ext keys used to build drds sql
 
 					}
 				}
@@ -125,6 +114,11 @@ func (c *Controller) InitTables() []TableHolder {
 		}
 	}
 }
+
+//
+//func (c *Controller) BuildExtKeys(table meta.Table, tableStr string, targetDB database.DBType) DataTranslator {
+//	return DataTranslator().translator
+//}
 
 func (c *Controller) isBlackTable(table string, tableBlackList []string) bool {
 	for _, obj := range tableBlackList {

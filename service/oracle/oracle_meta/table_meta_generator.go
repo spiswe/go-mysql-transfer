@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-mysql-transfer/service/oracle/database"
 	"go-mysql-transfer/service/oracle/oracle_meta/schema"
+	"go-mysql-transfer/service/oracle/utils"
 	"go-mysql-transfer/util/logs"
 	"strings"
 )
@@ -51,8 +52,8 @@ func (t *TableMetaGenerator) GetTableMetasWithoutColumn(
 			}
 		}
 	} else {
+		// use column type func to check if the table exists
 		ct, _ := schema.ColumnTypes(dataSource.Conn(), schemaName, tableName)
-		// use column type func to test if the table exists
 		if len(ct) != 0 &&
 			!(strings.HasPrefix(strings.ToUpper(tableName), "MLOG$_") ||
 				strings.HasPrefix(strings.ToUpper(tableName), "RUPD$_")) {
@@ -63,9 +64,20 @@ func (t *TableMetaGenerator) GetTableMetasWithoutColumn(
 	return result
 }
 
-//func (t *TableMetaGenerator) BuildColumns(dataSource database.DataSource, table *Table) {
-//	columns, _ := schema.ColumnTypes(dataSource.Conn(), table.Schema(), table.Name())
-//	for _, c := range columns {
-//
-//	}
-//}
+func (t *TableMetaGenerator) BuildColumns(dataSource database.DataSource, table *Table) {
+	columns, _ := schema.ColumnTypes(dataSource.Conn(), table.Schema(), table.Name())
+	primaryKeys, _ := schema.PrimaryKey(dataSource.Conn(), table.Schema(), table.Name())
+	var columnList, primaryKeyList []ColumnMeta
+	for _, col := range columns {
+		if utils.SliceContains(primaryKeys, col.Name()) {
+			primaryKeyMeta := NewColumnMeta(col.Name(), utils.SwitchToGoOraType(col.DatabaseTypeName()))
+			primaryKeyList = append(primaryKeyList, *primaryKeyMeta)
+		} else {
+			columnMeta := NewColumnMeta(col.Name(), utils.SwitchToGoOraType(col.DatabaseTypeName()))
+			columnList = append(columnList, *columnMeta)
+		}
+
+	}
+	table.SetColumns(columnList)
+	table.SetPrimaryKeys(primaryKeyList)
+}

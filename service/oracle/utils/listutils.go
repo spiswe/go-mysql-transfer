@@ -14,3 +14,16 @@ func RemoveItemByIndex(slice interface{}, i int) {
 	v := reflect.ValueOf(slice).Elem()
 	v.Set(reflect.AppendSlice(v.Slice(0, i), v.Slice(i+1, v.Len())))
 }
+
+func SliceContains(array interface{}, value interface{}) bool {
+	switch reflect.TypeOf(array).Kind() {
+	case reflect.Slice:
+		s := reflect.ValueOf(array)
+		for i := 0; i < s.Len(); i++ {
+			if reflect.DeepEqual(value, s.Index(i).Interface()) {
+				return true
+			}
+		}
+	}
+	return false
+}
