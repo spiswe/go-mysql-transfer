@@ -6,6 +6,7 @@ import (
 	"go-mysql-transfer/service/oracle/models"
 	meta "go-mysql-transfer/service/oracle/oracle_meta"
 	"go-mysql-transfer/service/oracle/translator"
+	"go-mysql-transfer/service/oracle/utils"
 	"go-mysql-transfer/util/logs"
 	"strings"
 )
@@ -55,12 +56,20 @@ func (c *Controller) start() {
 	// todo, maybe it is useless
 	c.SetTargetDBType(database.DBType(c.configuration.Flavor))
 	c.globalContext = c.InitGlobalContext()
+	concurrent := c.configuration.OracleTableConcurrentEnable
 	// todo add alarm
 	// todo add extractorDump, statBufferSize, statePrintInterval
+	// set default temporary
+	statBufferSize := 16384
+	statPrintInterval := 5
+	threadSize := 1
+	if concurrent {
+		threadSize = c.configuration.OracleTableConcurrentSize
+	}
 
 }
 
-func (c *Controller) TableHolder(table meta.Table) {}
+//func (c *Controller) TableHolder(table meta.Table) {}
 
 // InitTables todo 可能存在大小写问题，待测试确认
 func (c *Controller) InitTables() []TableHolder {
@@ -103,16 +112,30 @@ func (c *Controller) InitTables() []TableHolder {
 						(!c.isBlackTable(table.GetFullName(), tableBlackList)) {
 						meta.TableMetaGeneratorController.BuildColumns(c.globalContext.SourceDS(), &table)
 						// ext keys used to build drds sql
-
+						// may be use translator to build ext key, later decide
+						holder := NewTableHolder(table)
+						holder.ignoreSchema = ignoreSchema
+						if !utils.SliceContains(tables, holder) {
+							tables = append(tables, *holder)
+						}
 					}
 				}
-
-			} else {
-
 			}
-
+		}
+	} else {
+		tablemetas := meta.TableMetaGeneratorController.GetTableMetasWithoutColumn(c.globalContext.SourceDS(), "", "")
+		for _, tablemeta := range tablemetas {
+			if (!c.isBlackTable(tablemeta.Name(), tableBlackList)) && (!c.isBlackTable(tablemeta.GetFullName(), tableBlackList)) {
+				meta.TableMetaGeneratorController.BuildColumns(c.globalContext.SourceDS(), &tablemeta)
+				holder := NewTableHolder(tablemeta)
+				if !utils.SliceContains(tables, holder) {
+					tables = append(tables, *holder)
+				}
+			}
 		}
 	}
+	logs.Info("checks done, all tables ok")
+	return tables
 }
 
 //
