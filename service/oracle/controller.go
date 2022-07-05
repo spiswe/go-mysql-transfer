@@ -24,8 +24,9 @@ type Controller struct {
 	// todo
 	// alarmService translator DIR
 	// table controller to set table extractor
-	processTracer ProcessTracer
-	instance      Instance
+	tableController TableController
+	processTracer   ProcessTracer
+	instance        Instance
 }
 
 type TableHolder struct {
@@ -43,12 +44,12 @@ func NewController(configuration *global.Config) *Controller {
 }
 
 func (c *Controller) start() {
-	var dbconfig map[database.DataSourceConfig]database.DataSource
+	var dbConfig map[database.DataSourceConfig]database.DataSource
 	sourceConfig := database.NewDataSourceConfig(c.configuration)
-	dbconfig[*sourceConfig] = database.DataSource{}
+	dbConfig[*sourceConfig] = database.DataSource{}
 
 	// connect to all databases
-	c.dataSourceFactory.SetDataSources(dbconfig)
+	c.dataSourceFactory.SetDataSources(dbConfig)
 	c.dataSourceFactory.Start() // set all database connection
 
 	c.SetRunMode(models.RunMode(c.configuration.OracleRunMode))
@@ -57,14 +58,27 @@ func (c *Controller) start() {
 	c.SetTargetDBType(database.DBType(c.configuration.Flavor))
 	c.globalContext = c.InitGlobalContext()
 	concurrent := c.configuration.OracleTableConcurrentEnable
+	tableMetas := c.InitTables()
 	// todo add alarm
 	// todo add extractorDump, statBufferSize, statePrintInterval
 	// set default temporary
+	// for test
 	statBufferSize := 16384
 	statPrintInterval := 5
+	alarmReceiver := "spiswe@outlook.com"
+	retryTimes := 3
+	// milliseconds
+	retryInterval := 1000
+	noupdateThresoldDefault := -1
+	noUpdateThresold := 0
 	threadSize := 1
 	if concurrent {
 		threadSize = c.configuration.OracleTableConcurrentSize
+	}
+	c.tableController = *NewTableController(len(tableMetas), threadSize)
+	c.processTracer = *NewProcessTracer(c.runMode, len(tableMetas))
+	if threadSize < len(tableMetas) {
+		noupdateThresoldDefault = 3
 	}
 
 }
