@@ -1,4 +1,4 @@
-package position
+package positioner
 
 type OraclePosition string
 

@@ -81,5 +81,5 @@ func (o *OracleFullRecordExtractorOnce) ContinueExtractor(rows *sql.Rows) {
 		// todo add re to queue
 	}
 	extractor := o.absOraRecExt.Extractor()
-	extractor.setStatus(models.TABLEEND)
+	extractor.SetStatus(models.TABLEEND)
 }

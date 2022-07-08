@@ -2,6 +2,7 @@ package extractor
 
 import (
 	"database/sql"
+	go_ora "github.com/sijms/go-ora/v2"
 	"go-mysql-transfer/service/oracle/models"
 	meta "go-mysql-transfer/service/oracle/oracle_meta"
 )
@@ -24,7 +25,9 @@ func (a *AbstractRecordExtractor) getColumnValue(
 	rs *sql.Rows,
 	encoding string,
 	col meta.ColumnMeta) models.ColumnValue {
-
+	if col.ColumnType() == go_ora.DATE {
+		value := rs.Scan()
+	}
 	//var value interface{}
 	//if col.ColumnType() == go_ora.DATE {
 	//	var ret sql.NullTime

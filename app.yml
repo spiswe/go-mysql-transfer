@@ -26,6 +26,9 @@ oracle_table_white_list: t1,t2,t3,t4,t5
 oracle_table_black_list: t6,t7,t8,t9
 oracle_table_concurrent_enable: true
 oracle_table_concurrent_size: 5
+# memory file zk etcd
+oracle_positioner_mode: memory
+
 
 
 

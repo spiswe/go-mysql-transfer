@@ -3,25 +3,20 @@ package extractor
 import (
 	"go-mysql-transfer/service/oracle"
 	"go-mysql-transfer/service/oracle/models"
-	"go-mysql-transfer/service/oracle/models/position"
+	"go-mysql-transfer/service/oracle/positioner"
 )
 
 type RecordExtractor interface {
-	start()
-	stop()
-	abort(reason string, err error)
-	isStart() bool
-	isStop() bool
-
-	extract() []models.Record
-	status() models.ExtractStatus
-	ack(records []models.Record) position.OraclePosition
+	oracle.LifeCycle
+	Extract() []models.Record
+	Status() models.ExtractStatus
+	Ack(records []models.Record) positioner.OraclePosition
 }
 
 type AbstractRecordExtractor struct {
-	absLifeCycle  oracle.AbstractLifeCycle
-	extractStatus models.ExtractStatus
-	tracer        oracle.ProcessTracer
+	absLifeCycle oracle.AbstractLifeCycle
+	status       models.ExtractStatus
+	tracer       oracle.ProcessTracer
 }
 
 func (a *AbstractRecordExtractor) AbsLifeCycle() oracle.AbstractLifeCycle {
@@ -32,33 +27,50 @@ func (a *AbstractRecordExtractor) SetAbsLifeCycle(absLifeCycle oracle.AbstractLi
 	a.absLifeCycle = absLifeCycle
 }
 
-func (are *AbstractRecordExtractor) extract() []models.Record {
+func (a *AbstractRecordExtractor) SetStatus(status models.ExtractStatus) {
+	a.status = status
+}
+
+func (a *AbstractRecordExtractor) Tracer() oracle.ProcessTracer {
+	return a.tracer
+}
+
+func (a *AbstractRecordExtractor) SetTracer(tracer oracle.ProcessTracer) {
+	a.tracer = tracer
+}
+
+func (a *AbstractRecordExtractor) Start() {
+	a.absLifeCycle.Start()
+}
+
+func (a *AbstractRecordExtractor) Stop() {
+	a.absLifeCycle.Stop()
+}
+
+func (a *AbstractRecordExtractor) Abort(reason string, err error) {
+	a.absLifeCycle.Abort(reason, err)
+}
+
+func (a *AbstractRecordExtractor) IsStart() bool {
+	return a.absLifeCycle.IsStart()
+}
+
+func (a *AbstractRecordExtractor) IsStop() bool {
+	return a.absLifeCycle.IsStop()
+}
+
+// Extract different extractor use different extract method
+func (a *AbstractRecordExtractor) Extract() []models.Record {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (are *AbstractRecordExtractor) status() models.ExtractStatus {
+func (a *AbstractRecordExtractor) Status() models.ExtractStatus {
+	return a.status
+}
+
+// Ack different extractor use different ack method
+func (a *AbstractRecordExtractor) Ack(records []models.Record) positioner.OraclePosition {
 	//TODO implement me
 	panic("implement me")
-}
-
-func (are *AbstractRecordExtractor) ack(records []models.Record) position.OraclePosition {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (are *AbstractRecordExtractor) Tracer() oracle.ProcessTracer {
-	return are.tracer
-}
-
-func (are *AbstractRecordExtractor) SetTracer(tracer oracle.ProcessTracer) {
-	are.tracer = tracer
-}
-
-func (are *AbstractRecordExtractor) setStatus(status models.ExtractStatus) {
-	are.extractStatus = status
-}
-
-func (are *AbstractRecordExtractor) Status() models.ExtractStatus {
-	return are.extractStatus
 }

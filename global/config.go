@@ -129,6 +129,7 @@ type Config struct {
 	OracleTableBlackList        []string `yaml:"oracle_table_black_list"`
 	OracleTableConcurrentEnable bool     `yaml:"oracle_table_concurrent_enable"`
 	OracleTableConcurrentSize   int      `yaml:"oracle_table_concurrent_size"`
+	OraclePositionerMode        string   `yaml:"oracle_positioner_mode"`
 }
 
 type Cluster struct {

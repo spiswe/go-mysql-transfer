@@ -5,6 +5,7 @@ import (
 	"go-mysql-transfer/service/oracle/database"
 	"go-mysql-transfer/service/oracle/models"
 	meta "go-mysql-transfer/service/oracle/oracle_meta"
+	"go-mysql-transfer/service/oracle/positioner"
 	"go-mysql-transfer/service/oracle/translator"
 	"go-mysql-transfer/service/oracle/utils"
 	"go-mysql-transfer/util/logs"
@@ -71,6 +72,8 @@ func (c *Controller) start() {
 	retryInterval := 1000
 	noupdateThresoldDefault := -1
 	noUpdateThresold := 0
+	useExtractorExecutor := true
+	useApplierExecutor := true
 	threadSize := 1
 	if concurrent {
 		threadSize = c.configuration.OracleTableConcurrentSize
@@ -79,6 +82,21 @@ func (c *Controller) start() {
 	c.processTracer = *NewProcessTracer(c.runMode, len(tableMetas))
 	if threadSize < len(tableMetas) {
 		noupdateThresoldDefault = 3
+	}
+	if useExtractorExecutor {
+		extractorSize := 5
+		extractorExecutor, _ := NewExecutorPool(uint64(extractorSize))
+	}
+
+	if useApplierExecutor {
+		applierSize := 5
+		applierExecutor, _ := NewExecutorPool(uint64(applierSize))
+	}
+
+	for _, tableHolder := range tableMetas {
+		oracleContext := c.BuildContext(c.globalContext, tableHolder.table, tableHolder.ignoreSchema)
+		positioner := c.ChoosePositioner(tableHolder)
+
 	}
 
 }
@@ -156,6 +174,39 @@ func (c *Controller) InitTables() []TableHolder {
 //func (c *Controller) BuildExtKeys(table meta.Table, tableStr string, targetDB database.DBType) DataTranslator {
 //	return DataTranslator().translator
 //}
+
+func (c *Controller) ChoosePositioner(tableHolder TableHolder) positioner.RecordPositioner {
+	positionerMode := c.configuration.OraclePositionerMode
+	switch positionerMode {
+	// todo need to finish file/zk
+	case "memory":
+		p := positioner.MemoryRecordPositioner{}
+		return p
+	case "file":
+		p := positioner.FileRecordPositioner{}
+		return p
+	case "zk":
+		p := positioner.ZKRecordPositioner{}
+		return p
+	default:
+		p := positioner.MemoryRecordPositioner{}
+		return p
+	}
+}
+
+func (c *Controller) BuildContext(
+	context models.OracleContext,
+	table meta.Table,
+	ignoreSchema bool) models.OracleContext {
+	result := context.CloneOracleContext()
+	result.SetTableMeta(table)
+	// 识别是否存在schema 定义
+	if ignoreSchema {
+		result.SetIgnoreSchema(ignoreSchema)
+	}
+
+	return *result
+}
 
 func (c *Controller) isBlackTable(table string, tableBlackList []string) bool {
 	for _, obj := range tableBlackList {
