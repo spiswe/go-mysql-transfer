@@ -17,11 +17,11 @@ type OracleFullRecordExtractorOnce struct {
 	absOraRecExt  AbstractOracleRecordExtractor
 	oracleContext models.OracleContext
 	extractSQL    string
+	queue         chan models.Record
 }
 
 type ContinueExtractor struct {
 	// goroutine
-
 }
 
 func NewOracleFullRecordExtractorOnce(oracleContext models.OracleContext) *OracleFullRecordExtractorOnce {
@@ -55,30 +55,21 @@ func (o *OracleFullRecordExtractorOnce) Extract() []models.Record {
 	record := make([]models.Record, o.oracleContext.OnceCrawNum())
 	for i := 0; i < o.oracleContext.OnceCrawNum(); i++ {
 		//todo put record to queue, need add queue
+
 	}
 	return record
 }
 
 func (o *OracleFullRecordExtractorOnce) ContinueExtractor(rows *sql.Rows) {
 	for rows.Next() {
-		var columns []models.ColumnValue
-		var pks []models.ColumnValue
 		tableMeta := o.oracleContext.TableMeta()
-		for _, pk := range tableMeta.PrimaryKeys() {
-			extractor := o.absOraRecExt.Extractor()
-			c := extractor.getColumnValue(rows, o.oracleContext.GetSourceCodeEncoding(), pk)
-			pks = append(pks, c)
-		}
 
-		for _, col := range tableMeta.Columns() {
-			extractor := o.absOraRecExt.Extractor()
-			c := extractor.getColumnValue(rows, o.oracleContext.GetSourceCodeEncoding(), col)
-			columns = append(columns, c)
-		}
+		pks := o.absOraRecExt.GetColumnValues(rows, o.oracleContext.GetSourceCodeEncoding(), tableMeta.PrimaryKeys())
+		cms := o.absOraRecExt.GetColumnValues(rows, o.oracleContext.GetSourceCodeEncoding(), tableMeta.Columns())
 
-		re := models.NewRecord(tableMeta.Schema(), tableMeta.Name(), pks, columns)
+		re := models.NewRecord(tableMeta.Schema(), tableMeta.Name(), pks, cms)
 		logs.Info(re.SchemaName())
-		// todo add re to queue
+		o.queue <- *re
 	}
 	extractor := o.absOraRecExt.Extractor()
 	extractor.SetStatus(models.TABLEEND)
