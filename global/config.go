@@ -130,6 +130,8 @@ type Config struct {
 	OracleTableConcurrentEnable bool     `yaml:"oracle_table_concurrent_enable"`
 	OracleTableConcurrentSize   int      `yaml:"oracle_table_concurrent_size"`
 	OraclePositionerMode        string   `yaml:"oracle_positioner_mode"`
+	OracleExtractorOnce         bool     `yaml:"oracle_extractor_once"`
+	OracleExtractorSQL          string   `yaml:"oracle_extract_sql"`
 }
 
 type Cluster struct {

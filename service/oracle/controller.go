@@ -3,6 +3,7 @@ package oracle
 import (
 	"go-mysql-transfer/global"
 	"go-mysql-transfer/service/oracle/database"
+	"go-mysql-transfer/service/oracle/extractor"
 	"go-mysql-transfer/service/oracle/models"
 	meta "go-mysql-transfer/service/oracle/oracle_meta"
 	"go-mysql-transfer/service/oracle/positioner"
@@ -96,7 +97,7 @@ func (c *Controller) start() {
 	for _, tableHolder := range tableMetas {
 		oracleContext := c.BuildContext(c.globalContext, tableHolder.table, tableHolder.ignoreSchema)
 		positioner := c.ChoosePositioner(tableHolder)
-
+		//extractor :=
 	}
 
 }
@@ -174,6 +175,25 @@ func (c *Controller) InitTables() []TableHolder {
 //func (c *Controller) BuildExtKeys(table meta.Table, tableStr string, targetDB database.DBType) DataTranslator {
 //	return DataTranslator().translator
 //}
+
+func (c *Controller) ChooseExtractor(
+	tableHolder TableHolder,
+	context models.OracleContext,
+	runMode models.RunMode,
+	positioner positioner.RecordPositioner) extractor.RecordExtractor {
+
+	once := c.configuration.OracleExtractorOnce
+
+	if c.sourceDBType == database.Oracle {
+		if runMode == models.FULL || runMode == models.CHECK {
+			tableName := tableHolder.table.Name()
+			fullName := tableHolder.table.GetFullName()
+			extractSQL := c.configuration.OracleExtractorSQL
+
+		}
+	}
+
+}
 
 func (c *Controller) ChoosePositioner(tableHolder TableHolder) positioner.RecordPositioner {
 	positionerMode := c.configuration.OraclePositionerMode

@@ -32,7 +32,7 @@ func (o *OracleFullRecordExtractorOnce) SetExtractSQL(extractSQL string) {
 	o.extractSQL = extractSQL
 }
 
-func (o *OracleFullRecordExtractorOnce) start() {
+func (o *OracleFullRecordExtractorOnce) Start() {
 	// todo 需要增加对当前运行状态的判断
 	//o.absOraRecExt.extractor.AbsLifeCycle()
 	//extractor.AbsLifeCycle()
@@ -47,17 +47,33 @@ func (o *OracleFullRecordExtractorOnce) start() {
 	oracle.TracerController.Update(tableMeta.GetFullName(), models.FULLING)
 }
 
-func (o *OracleFullRecordExtractorOnce) stop() {
+func (o *OracleFullRecordExtractorOnce) Stop() {
 	// todo thread.stop
 }
 
 func (o *OracleFullRecordExtractorOnce) Extract() []models.Record {
-	record := make([]models.Record, o.oracleContext.OnceCrawNum())
+	records := make([]models.Record, o.oracleContext.OnceCrawNum())
 	for i := 0; i < o.oracleContext.OnceCrawNum(); i++ {
 		//todo put record to queue, need add queue
-
+		record := <-o.queue
+		if record.TableName() != "" {
+			records = append(records, record)
+		} else if o.absOraRecExt.Extractor().status == models.TABLEEND {
+			// todo 确认是否真的end了
+			record := <-o.queue
+			if record.TableName() != "" {
+				records = append(records, record)
+			} else {
+				// real end
+				break
+			}
+		} else {
+			// cannot get data
+			i--
+			continue
+		}
 	}
-	return record
+	return records
 }
 
 func (o *OracleFullRecordExtractorOnce) ContinueExtractor(rows *sql.Rows) {
