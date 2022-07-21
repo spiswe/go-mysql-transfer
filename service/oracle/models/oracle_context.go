@@ -7,24 +7,24 @@ import (
 )
 
 type OracleContext struct {
-	lastPosition         positioner.AbstractPosition // 最后一次同步的position 记录
-	tableMeta            meta.Table                  // 对应table oracle_meta
-	ignoreSchema         bool                        // 设置是否忽略schema
-	runMode              RunMode                     // 运行模式
-	onceCrawNum          int                         // 单次提取记录数量
-	tpsLimit             int                         `default:"0"` // 0 及以下代表不限制
-	sourceDS             database.DataSource         // datasource
-	targetDS             database.DataSource         // target datasource
-	batchApply           bool                        // 是否批量
-	skipApplierException bool                        // 是否跳过异常
-	SourceCodeEncoding   string                      `default:"UTF-8"` //source encoding
-	TargetCodeEncoding   string                      `default:"UTF-8"` // target encoding
-	mViewLogType         string                      // 物化视图日志类型
-	tablePKs             map[string][]string         // pk
+	lastPosition         positioner.OraclePosition // 最后一次同步的position 记录
+	tableMeta            meta.Table                // 对应table oracle_meta
+	ignoreSchema         bool                      // 设置是否忽略schema
+	runMode              RunMode                   // 运行模式
+	onceCrawNum          int                       // 单次提取记录数量
+	tpsLimit             int                       `default:"0"` // 0 及以下代表不限制
+	sourceDS             database.DataSource       // datasource
+	targetDS             database.DataSource       // target datasource
+	batchApply           bool                      // 是否批量
+	skipApplierException bool                      // 是否跳过异常
+	SourceCodeEncoding   string                    `default:"UTF-8"` //source encoding
+	TargetCodeEncoding   string                    `default:"UTF-8"` // target encoding
+	mViewLogType         string                    // 物化视图日志类型
+	tablePKs             map[string][]string       // pk
 }
 
 func NewOracleContextFull(
-	lastPosition positioner.AbstractPosition,
+	lastPosition positioner.OraclePosition,
 	tableMeta meta.Table,
 	ignoreSchema bool,
 	runMode RunMode,
@@ -99,7 +99,11 @@ func (o *OracleContext) MViewLogType() string {
 	return o.mViewLogType
 }
 
-func (o *OracleContext) SetLastPosition(position positioner.AbstractPosition) {
+func (o *OracleContext) LastPosition() positioner.OraclePosition {
+	return o.lastPosition
+}
+
+func (o *OracleContext) SetLastPosition(position positioner.OraclePosition) {
 	o.lastPosition = position
 }
 
