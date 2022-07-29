@@ -20,9 +20,9 @@ type OracleFullRecordExtractorOnce struct {
 	queue         chan models.Record
 }
 
-type ContinueExtractor struct {
-	// goroutine
-}
+//type ContinueExtractor struct {
+//	// goroutine
+//}
 
 func NewOracleFullRecordExtractorOnce(oracleContext models.OracleContext) *OracleFullRecordExtractorOnce {
 	return &OracleFullRecordExtractorOnce{oracleContext: oracleContext}

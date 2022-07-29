@@ -1,10 +1,13 @@
 package extractor
 
 import (
+	"database/sql"
 	"fmt"
 	"go-mysql-transfer/service/oracle"
 	"go-mysql-transfer/service/oracle/models"
 	meta "go-mysql-transfer/service/oracle/oracle_meta"
+	"go-mysql-transfer/service/oracle/positioner"
+	"reflect"
 	"strings"
 )
 
@@ -46,7 +49,62 @@ func (o *OracleFullRecordExtractor) start() {
 
 }
 
-func (o *OracleFullRecordExtractor) ContinueExtractor(context models.OracleContext) {
-	position := context.LastPosition()
-
+type ContinueExtractorFull struct {
+	ds      *sql.DB
+	id      interface{}
+	running bool
 }
+
+func (c *ContinueExtractorFull) NewContinueExtractorFull(extractor *OracleFullRecordExtractor) {
+	position := extractor.oracleContext.LastPosition()
+	datasource := extractor.oracleContext.SourceDS()
+	c.ds = datasource.Conn()
+
+	if position != nil {
+
+		// tell you that this is all for m_logs
+		idPosition := position.(*positioner.IDPosition)
+
+		if idPosition.CurrentProgress() == models.FULLING {
+			id := idPosition.ID()
+		}
+	}
+}
+
+func (c *ContinueExtractorFull) GetMinID(sql string) interface{} {
+	var minId interface{}
+	if c.ds != nil && strings.Trim(sql, " ") != "" {
+		rows, _ := c.ds.Query(sql)
+		defer func() {
+			_ = rows.Close()
+		}()
+
+		for rows.Next() {
+			_ = rows.Scan(&minId)
+			break
+		}
+
+		if minId != nil {
+			if reflect.TypeOf(minId) == reflect.TypeOf(1) {
+				minId = minId.(int)
+			} else {
+				minId = ""
+			}
+		} else {
+			if reflect.TypeOf(minId) == reflect.TypeOf(1) {
+				minId = 0
+			} else {
+				minId = ""
+			}
+		}
+		return minId
+	} else {
+		panic("datasource or getMinPkSQL is nil")
+	}
+}
+
+//func (o *OracleFullRecordExtractor) ContinueExtractor(context models.OracleContext) {
+//	position := context.LastPosition()
+//	o.oracleContext
+//
+//}
